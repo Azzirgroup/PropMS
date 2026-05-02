@@ -8,6 +8,14 @@ app_publisher = "Aakvatech"
 app_description = "Property Management Solution"
 app_icon = "octicon octicon-home"
 app_color = "grey"
+
+add_to_apps_screen = [
+    {
+        "name": "propms",
+        "logo": "/assets/propms/images/propms-icon.svg",
+        "title": "Property Management Solution",        
+    }
+]
 app_email = "info@aakvatech.com"
 app_license = "MIT"
 

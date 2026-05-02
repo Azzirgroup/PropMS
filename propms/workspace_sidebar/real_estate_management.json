@@ -1,0 +1,49 @@
+{
+ "app": "propms",
+ "creation": "2026-05-02 11:23:14.467131",
+ "docstatus": 0,
+ "doctype": "Workspace Sidebar",
+ "idx": 0,
+ "items": [
+  {
+   "child": 0,
+   "collapsible": 1,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Home",
+   "link_to": "Real Estate Management",
+   "link_type": "Workspace",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Lease",
+   "link_to": "Lease",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  },
+  {
+   "child": 0,
+   "collapsible": 1,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Property",
+   "link_to": "Property",
+   "link_type": "DocType",
+   "show_arrow": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-05-02 12:29:06.187221",
+ "modified_by": "Administrator",
+ "module": "Property Management Solution",
+ "name": "Real Estate Management",
+ "owner": "Administrator",
+ "standard": 1,
+ "title": "Real Estate Management"
+}
