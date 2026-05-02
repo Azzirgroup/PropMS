@@ -1,0 +1,28 @@
+[project]
+name = "propms"
+title = "Property Management Solution"
+description = "Property Management Solution"
+author = "Aakvatech"
+email = "info@aakvatech.com"
+license = "MIT"
+version = "1.0.0"
+
+[build]
+dependencies = [
+    { "frappe" = ">=16.0.0" }
+]
+
+[frappe]
+app_name = "propms"
+app_title = "Property Management Solution"
+app_publisher = "Aakvatech"
+app_description = "Property Management Solution"
+app_icon = "octicon octicon-home"
+app_color = "grey"
+app_email = "info@aakvatech.com"
+app_license = "MIT"
+
+[frappe.add_to_apps_screen]
+name = "propms"
+logo = "/assets/propms/images/propms-icon.svg"
+title = "Property Management Solution"
