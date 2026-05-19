@@ -1,0 +1,21 @@
+{
+ "creation": "2026-05-19 11:00:00.000000",
+ "color": "#449CF0",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "Lease",
+ "filters_json": "[[\"Lease\",\"lease_status\",\"=\",\"Active\"],[\"Lease\",\"docstatus\",\"=\",1]]",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "Active Leases",
+ "modified": "2026-05-19 11:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Property Management Solution",
+ "name": "Active Leases",
+ "owner": "Administrator",
+ "show_percentage_stats": 1,
+ "stats_time_interval": "Monthly",
+ "type": "Document Type"
+}

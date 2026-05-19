@@ -213,6 +213,7 @@ scheduler_events = {
     "daily": [
         "propms.auto_custom.statusChangeBeforeLeaseExpire",
         "propms.auto_custom.statusChangeAfterLeaseExpire",
+        "propms.property_management_solution.doctype.property_document.property_document.mark_expiring_documents",
     ],
     "cron": {"00 12 * * *": ["propms.lease_invoice.leaseInvoiceAutoCreate"]},
 }

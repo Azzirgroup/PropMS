@@ -181,7 +181,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "Available\nBooked\nCommon Area (Not for lease)\nManaged for Customer\nOff Lease in 3 Months\nOn Lease\nOn Sale\nRemoved\nRenewal\nSold\nVacating\nOn lease"
+   "options": "Available\nBooked\nCommon Area (Not for lease)\nManaged for Customer\nOff Lease in 3 Months\nOn Lease\nOn Sale\nRemoved\nRenewal\nSold\nVacating\nUnder Maintenance"
   },
   {
    "bold": 1,
@@ -271,12 +271,6 @@
    "label": "Old Parent",
    "options": "Property",
    "read_only": 1
-  },
-  {
-   "fieldname": "parent_property",
-   "fieldtype": "Link",
-   "label": "Parent property",
-   "options": "Property"
   }
  ],
  "icon": "octicon octicon-home",

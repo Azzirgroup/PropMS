@@ -1,0 +1,188 @@
+{% extends "templates/web.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block head_include %}
+<style>
+.propms-help { max-width: 1100px; margin: 24px auto; padding: 0 16px; color: var(--text-color, #1f272e); }
+.propms-help h1 { font-size: 28px; margin-bottom: 4px; }
+.propms-help h2 { font-size: 20px; margin: 28px 0 10px; border-bottom: 1px solid var(--border-color, #e2e6e9); padding-bottom: 6px; }
+.propms-help h3 { font-size: 16px; margin: 18px 0 6px; }
+.propms-help p, .propms-help li { line-height: 1.55; }
+.propms-help .lead { color: var(--text-muted, #687178); margin-bottom: 16px; }
+.propms-help .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.propms-help .card {
+  border: 1px solid var(--border-color, #e2e6e9);
+  border-radius: 6px;
+  padding: 12px 14px;
+  background: var(--fg-color, #fff);
+}
+.propms-help .card .label { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted, #687178); }
+.propms-help .card .name { font-weight: 600; font-size: 15px; margin-top: 2px; }
+.propms-help .card .desc { font-size: 13px; color: var(--text-muted, #687178); margin-top: 4px; }
+.propms-help table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 14px; }
+.propms-help th, .propms-help td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border-color, #e2e6e9); vertical-align: top; }
+.propms-help th { background: var(--bg-color, #f6f8fa); font-weight: 600; }
+.propms-help code { background: var(--bg-color, #f6f8fa); padding: 1px 6px; border-radius: 4px; font-size: 12.5px; }
+.propms-help .flow { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; background: var(--bg-color, #f6f8fa); padding: 14px 16px; border-radius: 6px; font-size: 13px; line-height: 1.6; white-space: pre; overflow-x: auto; }
+.propms-help .step { display: flex; gap: 12px; margin: 8px 0; }
+.propms-help .step .num { flex: 0 0 28px; height: 28px; border-radius: 50%; background: #449cf0; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+.propms-help .step .body { flex: 1; }
+.propms-help .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; background: var(--bg-color, #eef2f5); color: var(--text-muted, #687178); margin-right: 4px; }
+.propms-help a { color: #449cf0; }
+.propms-help .footer { margin-top: 32px; font-size: 12px; color: var(--text-muted, #687178); text-align: center; }
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div class="propms-help">
+
+<h1>Property Management Solution — How It Works</h1>
+<p class="lead">A quick tour of the doctypes, how they link together, and the day-to-day workflows. Version <code>{{ app_version }}</code>.</p>
+
+<h2>The core entities</h2>
+<div class="grid">
+  <div class="card">
+    <div class="label">Master</div>
+    <div class="name"><a href="/app/property">Property</a></div>
+    <div class="desc">A building or estate. Tree-structured (parent/child). Holds meter installations, amenities, insurance and on-site assets.</div>
+  </div>
+  <div class="card">
+    <div class="label">Master</div>
+    <div class="name"><a href="/app/property-unit">Property Unit</a></div>
+    <div class="desc">An individually-leasable unit within a Property — apartment, office, shop. Carries occupancy status (Available / Rented / etc.).</div>
+  </div>
+  <div class="card">
+    <div class="label">Transaction</div>
+    <div class="name"><a href="/app/lease">Lease</a></div>
+    <div class="desc">Tenancy agreement linking a Property + Customer + lease items + dates. Generates the invoice schedule and triggers handover checklists.</div>
+  </div>
+  <div class="card">
+    <div class="label">Generated</div>
+    <div class="name"><a href="/app/sales-invoice">Sales Invoice</a></div>
+    <div class="desc">Issued automatically from the Lease Invoice Schedule at each cycle, or manually for utility / damage recoveries.</div>
+  </div>
+  <div class="card">
+    <div class="label">Operations</div>
+    <div class="name"><a href="/app/issue">Issue</a></div>
+    <div class="desc">Maintenance ticket. Routes to the right vendor, tracks parts via Material Request, bills back through Sales Invoice.</div>
+  </div>
+  <div class="card">
+    <div class="label">Compliance</div>
+    <div class="name"><a href="/app/property-document">Property Document</a></div>
+    <div class="desc">Title deeds, insurance policies, fire-safety certificates etc. with expiry &amp; renewal-reminder tracking.</div>
+  </div>
+  <div class="card">
+    <div class="label">Vendors</div>
+    <div class="name"><a href="/app/property-vendor">Property Vendor</a></div>
+    <div class="desc">Service providers (plumbing, electrical, security…) with agreement dates, value, rating, optional Supplier link.</div>
+  </div>
+  <div class="card">
+    <div class="label">Master</div>
+    <div class="name"><a href="/app/insurance">Insurance</a></div>
+    <div class="desc">Policies attached to a Property — coverage, premium, validity window.</div>
+  </div>
+</div>
+
+<h2>How the doctypes link together</h2>
+<div class="flow">
+       Customer ──── owns / rents
+           │
+           ▼
+       Property  ◄──── parent (tree) ────►  Property
+           │                                     │
+           ├── Property Unit ── Unit Type        │
+           ├── Insurance                         │
+           ├── Property Document  (expiry tracking)
+           ├── Property Vendor    (service providers)
+           ├── Property Meter Reading ── Meter
+           │                                  │
+           │                                  ▼
+           │                            Meter Reading ── auto-creates ──► Sales Invoice
+           │
+           ▼
+        Lease ── Lease Item (child)
+           │
+           ▼
+   Lease Invoice Schedule (child)
+           │   daily scheduler @ 12:00
+           ▼
+       Sales Invoice  ─── Payment Entry  ─── Journal Entry
+
+   Issue  ──► Issue Materials Detail ──► Material Request ──► Sales Invoice
+     (maintenance ticket)                 (parts pulled)        (bill-back)
+
+   Daily Checklist ◄── auto on Lease submit (Handover / Takeover)
+</div>
+
+<h2>Day-to-day workflows</h2>
+
+<h3>1 · Onboard a new property</h3>
+<div class="step"><div class="num">1</div><div class="body">Create a <a href="/app/property/new?is_group=1">parent Property</a> for the building. Optionally create child Property records per floor, plus a <a href="/app/property-unit/new">Property Unit</a> per leasable space.</div></div>
+<div class="step"><div class="num">2</div><div class="body">Attach the title deed and any certificates as <a href="/app/property-document">Property Documents</a>, with the expiry date set so they show up in the &ldquo;Expiring Soon&rdquo; rollup.</div></div>
+<div class="step"><div class="num">3</div><div class="body">Register meters under the Property's <em>Property Meter Reading</em> table (each row points to a <a href="/app/meter">Meter</a> master).</div></div>
+
+<h3>2 · Sign a lease</h3>
+<div class="step"><div class="num">1</div><div class="body">Create a <a href="/app/lease/new">Lease</a>: pick the Property + Customer + start/end dates + lease items (rent, service charge, etc.).</div></div>
+<div class="step"><div class="num">2</div><div class="body">On Submit: the system auto-generates the <em>Lease Invoice Schedule</em> for every cycle and creates a <em>Daily Checklist</em> for Handover from the &ldquo;Handover&rdquo; checkup area template.</div></div>
+<div class="step"><div class="num">3</div><div class="body">Property status flips to <span class="pill">On Lease</span> and, in the last 3 months, to <span class="pill">Off Lease in 3 Months</span> for renewal flagging (visible on the workspace).</div></div>
+
+<h3>3 · Billing</h3>
+<div class="step"><div class="num">1</div><div class="body">Every day at 12:00, <code>propms.lease_invoice.leaseInvoiceAutoCreate</code> walks Lease Invoice Schedule rows whose <em>date_to_invoice</em> is due and creates one Sales Invoice per (lease, customer, item group, date, currency) grouping.</div></div>
+<div class="step"><div class="num">2</div><div class="body">Utility invoices are produced when a <a href="/app/meter-reading">Meter Reading</a> is submitted — one row per Property Unit, billed to the lease customer.</div></div>
+<div class="step"><div class="num">3</div><div class="body">Watch <a href="/app/query-report/Debtors Report">Debtors Report</a> and <a href="/app/query-report/Rent Invoices Details">Rent Invoices Details</a> from the workspace for collection status.</div></div>
+
+<h3>4 · Maintenance</h3>
+<div class="step"><div class="num">1</div><div class="body">Tenant or property manager opens an <a href="/app/issue/new">Issue</a> with the Property field set. Assign a Person-in-charge (and optionally a <a href="/app/property-vendor">Property Vendor</a>).</div></div>
+<div class="step"><div class="num">2</div><div class="body">Add the parts to <em>Materials Required</em>; a Material Request is generated. When marked Issued, a billable Sales Invoice draft is created for the tenant (if applicable).</div></div>
+<div class="step"><div class="num">3</div><div class="body">Close the Issue with the <em>Customer Feedback</em> field; the Sales Invoice can be submitted by the maintenance manager.</div></div>
+
+<h3>5 · Move-out</h3>
+<div class="step"><div class="num">1</div><div class="body">Create an <a href="/app/exit/new">Exit</a> record. Generate a Takeover <a href="/app/daily-checklist">Daily Checklist</a>.</div></div>
+<div class="step"><div class="num">2</div><div class="body">Reconcile the Security Deposit on the Lease — mark it Returned / Recovered for rent / Recovered for repairs.</div></div>
+<div class="step"><div class="num">3</div><div class="body">Property status auto-flips back to <span class="pill">Available</span> the day after lease end.</div></div>
+
+<h2>Settings &amp; configuration</h2>
+<table>
+  <thead><tr><th>Setting</th><th>Where</th><th>Why it matters</th></tr></thead>
+  <tbody>
+    <tr><td><b>Invoice Start Date</b></td><td><a href="/app/property-management-settings">Property Management Settings</a></td><td>Cut-off below which the daily auto-invoice job ignores schedule rows.</td></tr>
+    <tr><td><b>Maintenance Item Group</b></td><td>Property Management Settings</td><td>Whitelist of item groups eligible for automated maintenance billing.</td></tr>
+    <tr><td><b>Security Deposit Item / Payment Type</b></td><td>Property Management Settings</td><td>Defaults used when creating Journal Entries for deposits.</td></tr>
+    <tr><td><b>Default Tax Template</b></td><td><a href="/app/company">Company</a></td><td>Applied to every auto-generated Sales Invoice.</td></tr>
+    <tr><td><b>Cost Center</b></td><td>Property</td><td>Stamped on every Sales Invoice for per-property profitability.</td></tr>
+    <tr><td><b>Checklist Checkup Area</b></td><td><a href="/app/checklist-checkup-area">Checklist Checkup Area</a></td><td>Templates &ldquo;Handover&rdquo;, &ldquo;Takeover&rdquo; auto-populate Daily Checklist tasks.</td></tr>
+  </tbody>
+</table>
+
+<h2>Scheduled jobs</h2>
+<table>
+  <thead><tr><th>Job</th><th>Cadence</th><th>What it does</th></tr></thead>
+  <tbody>
+    <tr><td><code>statusChangeBeforeLeaseExpire</code></td><td>Daily</td><td>Flips Property status to <em>Off Lease in 3 Months</em> when the latest lease's end is approaching.</td></tr>
+    <tr><td><code>statusChangeAfterLeaseExpire</code></td><td>Daily</td><td>Flips Property status to <em>Available</em> the day after lease end.</td></tr>
+    <tr><td><code>leaseInvoiceAutoCreate</code></td><td>Daily 12:00</td><td>Materialises Sales Invoices from due Lease Invoice Schedule rows.</td></tr>
+    <tr><td><code>mark_expiring_documents</code></td><td>Daily</td><td>Refreshes Property Document status to <em>Expiring Soon</em> / <em>Expired</em>.</td></tr>
+  </tbody>
+</table>
+
+<h2>Reports cheat-sheet</h2>
+<table>
+  <thead><tr><th>Report</th><th>Question it answers</th></tr></thead>
+  <tbody>
+    <tr><td><a href="/app/query-report/Property Status">Property Status</a></td><td>What's the leased / available / on-sale split right now?</td></tr>
+    <tr><td><a href="/app/query-report/Lease Information">Lease Information</a></td><td>All active leases with tenants, dates, deposits at a glance.</td></tr>
+    <tr><td><a href="/app/query-report/Pending Signed Agreement">Pending Signed Agreement</a></td><td>Which submitted leases still don't have a counter-signed copy?</td></tr>
+    <tr><td><a href="/app/query-report/Rent Invoices Details">Rent Invoices Details</a></td><td>Rent billing history with outstanding amounts per invoice.</td></tr>
+    <tr><td><a href="/app/query-report/Utility Invoices">Utility Invoices</a></td><td>Meter-driven invoices &amp; collection status.</td></tr>
+    <tr><td><a href="/app/query-report/Debtors Report">Debtors Report</a></td><td>Aged receivables filtered to property tenants.</td></tr>
+    <tr><td><a href="/app/query-report/Security Deposit">Security Deposit</a></td><td>Per-lease deposit balances &amp; recovery status.</td></tr>
+  </tbody>
+</table>
+
+<div class="footer">
+  Need a deeper dive? Check the source under <code>apps/propms/propms/</code> or open an issue. Updated for v{{ app_version }}.
+</div>
+
+</div>
+{% endblock %}

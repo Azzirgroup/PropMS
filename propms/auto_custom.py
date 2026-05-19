@@ -13,12 +13,18 @@ import traceback
 
 @frappe.whitelist()
 def app_error_log(title, error):
-    frappe.throw(
-        msg=error,
-        exc=traceback.format_exc(),
-        title=str("User:") + str(title),
-        is_minimizable=None,
-    )
+    try:
+        d = frappe.get_doc(
+            {
+                "doctype": "Custom Error Log",
+                "title": str("User:") + str(title),
+                "error": traceback.format_exc(),
+            }
+        )
+        d = d.insert(ignore_permissions=True)
+        return d
+    except Exception:
+        frappe.log_error(message=traceback.format_exc(), title="propms.app_error_log")
 
 
 @frappe.whitelist()
@@ -382,7 +388,7 @@ def makeInvoiceSchedule(
                 doctype="Lease Invoice Schedule",
                 parent=name,
                 parentfield="lease_invoice_schedule",
-                parenttype="lease",
+                parenttype="Lease",
                 date_to_invoice=date_to_invoice,
                 schedule_start_date=date,
                 lease_item=item,

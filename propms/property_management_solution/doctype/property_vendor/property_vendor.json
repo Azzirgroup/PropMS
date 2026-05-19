@@ -1,0 +1,225 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:vendor_name",
+ "creation": "2026-05-19 12:00:00.000000",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_section",
+  "vendor_name",
+  "linked_supplier",
+  "service_category",
+  "column_break_1",
+  "primary_contact",
+  "phone",
+  "email",
+  "agreement_section",
+  "agreement_number",
+  "agreement_start",
+  "column_break_2",
+  "agreement_end",
+  "agreement_value",
+  "currency",
+  "rating_section",
+  "rating",
+  "is_active",
+  "column_break_3",
+  "preferred_for",
+  "address_section",
+  "address",
+  "notes_section",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Information"
+  },
+  {
+   "fieldname": "vendor_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Vendor Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "linked_supplier",
+   "fieldtype": "Link",
+   "label": "Linked Supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "service_category",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Service Category",
+   "options": "\nPlumbing\nElectrical\nHVAC\nCleaning\nLandscaping\nPest Control\nSecurity\nElevator Maintenance\nFire Safety\nGeneral Maintenance\nPainting\nRenovation\nLegal\nInsurance\nOther",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "primary_contact",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Primary Contact"
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "label": "Phone",
+   "options": "Phone"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "options": "Email"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "agreement_section",
+   "fieldtype": "Section Break",
+   "label": "Service Agreement"
+  },
+  {
+   "fieldname": "agreement_number",
+   "fieldtype": "Data",
+   "label": "Agreement Number"
+  },
+  {
+   "fieldname": "agreement_start",
+   "fieldtype": "Date",
+   "label": "Agreement Start"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "agreement_end",
+   "fieldtype": "Date",
+   "in_standard_filter": 1,
+   "label": "Agreement End"
+  },
+  {
+   "fieldname": "agreement_value",
+   "fieldtype": "Currency",
+   "label": "Agreement Value",
+   "options": "currency"
+  },
+  {
+   "default": "USD",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "rating_section",
+   "fieldtype": "Section Break",
+   "label": "Status & Rating"
+  },
+  {
+   "fieldname": "rating",
+   "fieldtype": "Rating",
+   "in_list_view": 1,
+   "label": "Rating"
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Is Active"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "preferred_for",
+   "fieldtype": "Small Text",
+   "label": "Preferred For (Properties / Notes)"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "address_section",
+   "fieldtype": "Section Break",
+   "label": "Address"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "notes_section",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  }
+ ],
+ "icon": "fa fa-wrench",
+ "links": [],
+ "modified": "2026-05-19 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Property Management Solution",
+ "name": "Property Vendor",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Property Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Maintenance Manager",
+   "share": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "vendor_name",
+ "track_changes": 1
+}
