@@ -7,7 +7,7 @@
  "items": [
   {
    "child": 0,
-   "collapsible": 1,
+   "collapsible": 0,
    "icon": "home",
    "indent": 0,
    "keep_closed": 0,
@@ -19,6 +19,17 @@
   },
   {
    "child": 0,
+   "collapsible": 1,
+   "icon": "map-pin-house",
+   "indent": 1,
+   "keep_closed": 0,
+   "label": "Properties",
+   "link_type": "DocType",
+   "show_arrow": 1,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
    "collapsible": 1,
    "icon": "map-pin-house",
    "indent": 0,
@@ -37,18 +48,6 @@
    "keep_closed": 0,
    "label": "Property Unit",
    "link_to": "Property Unit",
-   "link_type": "DocType",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
-   "icon": "list",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Apartment Status",
-   "link_to": "Apartment Status",
    "link_type": "DocType",
    "show_arrow": 0,
    "type": "Link"
@@ -93,6 +92,17 @@
    "child": 0,
    "collapsible": 1,
    "icon": "money-coins-1",
+   "indent": 1,
+   "keep_closed": 0,
+   "label": "Lease & Billing",
+   "link_type": "DocType",
+   "show_arrow": 1,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "money-coins-1",
    "indent": 0,
    "keep_closed": 0,
    "label": "Lease",
@@ -117,12 +127,12 @@
    "child": 0,
    "collapsible": 1,
    "icon": "wrench",
-   "indent": 0,
+   "indent": 1,
    "keep_closed": 0,
    "label": "Maintenance",
    "link_type": "DocType",
-   "show_arrow": 0,
-   "type": "Link"
+   "show_arrow": 1,
+   "type": "Section Break"
   },
   {
    "child": 1,
@@ -163,30 +173,6 @@
   {
    "child": 1,
    "collapsible": 1,
-   "icon": "key",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Key Set",
-   "link_to": "Key Set",
-   "link_type": "DocType",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
-   "icon": "tool",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Tool Item Set",
-   "link_to": "Tool Item Set",
-   "link_type": "DocType",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
    "icon": "log-out",
    "indent": 0,
    "keep_closed": 0,
@@ -199,69 +185,22 @@
   {
    "child": 0,
    "collapsible": 1,
-   "icon": "users",
-   "indent": 0,
-   "keep_closed": 1,
-   "label": "Outsourcing & Security",
-   "link_type": "DocType",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
-   "icon": "users",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Outsourcing Attendance",
-   "link_to": "Outsourcing Attendance",
-   "link_type": "DocType",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
-   "icon": "clock",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Outsourcing Shift",
-   "link_to": "Outsourcing Shift",
-   "link_type": "DocType",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
-   "icon": "shield",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Security Attendance",
-   "link_to": "Security Attendance",
-   "link_type": "DocType",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
-   "icon": "clock",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Guard Shift",
-   "link_to": "Guard Shift",
-   "link_type": "DocType",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "child": 0,
-   "collapsible": 1,
    "icon": "activity",
-   "indent": 0,
+   "indent": 1,
    "keep_closed": 0,
    "label": "Reports",
+   "link_type": "Report",
+   "show_arrow": 1,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "read-status",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Property Status",
+   "link_to": "Property Status",
    "link_type": "Report",
    "show_arrow": 0,
    "type": "Link"
@@ -281,11 +220,11 @@
   {
    "child": 1,
    "collapsible": 1,
-   "icon": "read-status",
+   "icon": "badge-dollar-sign",
    "indent": 0,
    "keep_closed": 0,
-   "label": "Property Status",
-   "link_to": "Property Status",
+   "label": "Rent Invoice Details",
+   "link_to": "Rent Invoices Details",
    "link_type": "Report",
    "show_arrow": 0,
    "type": "Link"
@@ -303,84 +242,23 @@
    "type": "Link"
   },
   {
-   "child": 1,
-   "collapsible": 1,
-   "icon": "activity",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Creditors Report",
-   "link_to": "Creditors Report",
-   "link_type": "Report",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
-   "icon": "badge-dollar-sign",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Rent Invoice Details",
-   "link_to": "Rent Invoices Details",
-   "link_type": "Report",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
-   "icon": "badge-dollar-sign",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Utility Invoices",
-   "link_to": "Utility Invoices",
-   "link_type": "Report",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
-   "icon": "badge-dollar-sign",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Invoice Details",
-   "link_to": "Invoice Details",
-   "link_type": "Report",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
-   "icon": "file-text",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Pending Signed Agreement",
-   "link_to": "Pending Signed Agreement",
-   "link_type": "Report",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
-   "icon": "money-coins-1",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Security Deposit",
-   "link_to": "Security Deposit",
-   "link_type": "Report",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
    "child": 0,
    "collapsible": 1,
    "icon": "setting-gear",
-   "indent": 0,
+   "indent": 1,
    "keep_closed": 1,
    "label": "Settings",
+   "link_type": "DocType",
+   "show_arrow": 1,
+   "type": "Section Break"
+  },
+  {
+   "child": 1,
+   "collapsible": 1,
+   "icon": "setting-gear",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Property Management Settings",
    "link_to": "Property Management Settings",
    "link_type": "DocType",
    "show_arrow": 0,
@@ -401,18 +279,6 @@
   {
    "child": 1,
    "collapsible": 1,
-   "icon": "tag",
-   "indent": 0,
-   "keep_closed": 0,
-   "label": "Outsourcing Category",
-   "link_to": "Outsourcing Category",
-   "link_type": "DocType",
-   "show_arrow": 0,
-   "type": "Link"
-  },
-  {
-   "child": 1,
-   "collapsible": 1,
    "icon": "list-check",
    "indent": 0,
    "keep_closed": 0,
@@ -423,7 +289,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-05-19 13:00:00.000000",
+ "modified": "2026-05-19 14:00:00.000000",
  "modified_by": "Administrator",
  "module": "Property Management Solution",
  "name": "Real Estate",

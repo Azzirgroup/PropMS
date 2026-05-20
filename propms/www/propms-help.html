@@ -4,6 +4,11 @@
 
 {% block head_include %}
 <style>
+{% if is_modal %}
+.navbar, .web-footer, footer, #navbar-breadcrumbs, .page-head { display: none !important; }
+body, main, .main-section { padding-top: 0 !important; margin-top: 0 !important; }
+.propms-help { margin-top: 4px !important; }
+{% endif %}
 .propms-help { max-width: 1100px; margin: 24px auto; padding: 0 16px; color: var(--text-color, #1f272e); }
 .propms-help h1 { font-size: 28px; margin-bottom: 4px; }
 .propms-help h2 { font-size: 20px; margin: 28px 0 10px; border-bottom: 1px solid var(--border-color, #e2e6e9); padding-bottom: 6px; }
