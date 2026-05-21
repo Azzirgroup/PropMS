@@ -19,6 +19,11 @@ add_to_apps_screen = [
 app_email = "info@aakvatech.com"
 app_license = "MIT"
 
+# Apps this app depends on. Bench installs/validates these (frappe is implicit).
+# This is the correct place for Frappe-app dependencies — do NOT put them in
+# pyproject.toml/requirements.txt, where uv would try to pip-resolve them.
+required_apps = ["erpnext"]
+
 # Includes in <head>
 # ------------------
 

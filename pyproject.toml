@@ -7,8 +7,10 @@ description = "Property Management Solution"
 requires-python = ">=3.10,<3.15"
 dynamic = ["version"]
 dependencies = [
-    "frappe>=16.0.0",
-    "pypika @ git+https://github.com/frappe/pypika@2c50e6142b2d61d2d243e466fdd5dc03b3d918f2"
+    # "frappe" and other framework packages are installed and managed by bench,
+    # so they must NOT be listed here. Listing frappe makes uv re-resolve its
+    # transitive deps (e.g. the gunicorn git-URL pin) and the install fails.
+    # Add only third-party PyPI packages this app genuinely needs.
 ]
 
 [build-system]

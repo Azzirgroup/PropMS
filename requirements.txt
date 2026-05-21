@@ -1,2 +1,3 @@
-erpnext
-csf_tz
+# Frappe-app dependencies (frappe, erpnext) are managed by bench via
+# `required_apps` in propms/hooks.py — not pip. Third-party PyPI packages,
+# if any are ever needed, go here. Keep this in sync with pyproject.toml.
