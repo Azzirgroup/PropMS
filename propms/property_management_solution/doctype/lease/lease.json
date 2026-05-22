@@ -9,6 +9,7 @@
  "field_order": [
   "lease_basic_info_section",
   "company",
+  "property_unit",
   "property",
   "column_break_4",
   "lease_date",
@@ -37,6 +38,8 @@
   "notice_period",
   "column_break_23",
   "fit_out_period",
+  "meter_readings_section",
+  "meter_readings",
   "security_deposit_details_section",
   "security_deposit_currency",
   "security_deposit",
@@ -60,19 +63,32 @@
    "label": "Lease Basic info"
   },
   {
-   "fetch_from": "property.company",
+   "fetch_from": "property_unit.company",
    "fieldname": "company",
    "fieldtype": "Link",
    "label": "Company",
    "options": "Company"
   },
   {
+   "description": "The leasable unit being leased",
+   "fieldname": "property_unit",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Property Unit",
+   "options": "Property Unit",
+   "reqd": 1
+  },
+  {
+   "description": "Building / estate (auto-filled from the unit)",
+   "fetch_from": "property_unit.property",
    "fieldname": "property",
    "fieldtype": "Link",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Property",
    "options": "Property",
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "column_break_4",
@@ -219,6 +235,19 @@
    "fieldname": "fit_out_period",
    "fieldtype": "Int",
    "label": "Fit out Period"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "meter_readings_section",
+   "fieldtype": "Section Break",
+   "label": "Meter Readings (Handover / Exit)"
+  },
+  {
+   "description": "Opening readings are captured at handover and closing readings at move-out. Auto-pulled from the unit's building meters.",
+   "fieldname": "meter_readings",
+   "fieldtype": "Table",
+   "label": "Meter Readings",
+   "options": "Lease Meter Reading"
   },
   {
    "fieldname": "security_deposit_details_section",

@@ -11,8 +11,9 @@
  "field_order": [
   "details_section",
   "unit_number",
-  "name1",
   "property",
+  "company",
+  "cost_center",
   "type",
   "column_break_1",
   "status",
@@ -31,6 +32,7 @@
   "commercial_section",
   "rent",
   "security_deposit",
+  "rent_item",
   "column_break_3",
   "smoking",
   "furnished",
@@ -52,20 +54,30 @@
    "reqd": 1
   },
   {
-   "fieldname": "name1",
-   "fieldtype": "Data",
-   "in_global_search": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Name"
-  },
-  {
+   "description": "Building / estate this unit belongs to",
    "fieldname": "property",
    "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Property",
    "options": "Property"
+  },
+  {
+   "fetch_from": "property.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "property.cost_center",
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "read_only": 1
   },
   {
    "fieldname": "type",
@@ -91,7 +103,7 @@
    "fieldname": "unit_owner",
    "fieldtype": "Link",
    "label": "Unit Owner",
-   "options": "Contact"
+   "options": "Customer"
   },
   {
    "fieldname": "title_deed_number",
@@ -167,6 +179,15 @@
    "label": "Security Deposit"
   },
   {
+   "description": "Auto-created on save; used as the Rent line when this unit is leased",
+   "fieldname": "rent_item",
+   "fieldtype": "Link",
+   "label": "Rent Item",
+   "no_copy": 1,
+   "options": "Item",
+   "read_only": 1
+  },
+  {
    "fieldname": "column_break_3",
    "fieldtype": "Column Break"
   },
@@ -204,10 +225,11 @@
  "image_field": "photo",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-05-19 14:30:00.000000",
+ "modified": "2026-05-21 22:08:43.295743",
  "modified_by": "Administrator",
  "module": "Property Management Solution",
  "name": "Property Unit",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
@@ -245,9 +267,10 @@
   }
  ],
  "quick_entry": 1,
+ "row_format": "Dynamic",
  "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "title_field": "name1",
+ "states": [],
  "track_changes": 1
 }

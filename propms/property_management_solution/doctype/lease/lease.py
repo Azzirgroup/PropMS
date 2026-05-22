@@ -4,8 +4,9 @@
 
 from __future__ import unicode_literals
 import frappe
+from frappe import _
 from frappe.model.document import Document
-from frappe.utils import add_days, today, getdate, add_months, get_datetime, now
+from frappe.utils import add_days, today, getdate, add_months, get_datetime, now, flt
 from propms.auto_custom import app_error_log, makeInvoiceSchedule, getDateMonthDiff
 
 
@@ -33,25 +34,101 @@ class Lease(Document):
             app_error_log(frappe.session.user, str(e))
 
     def validate(self):
-        try:
-            if (
-                get_datetime(self.start_date)
-                <= get_datetime(now())
-                <= get_datetime(add_months(self.end_date, -3))
-            ):
-                frappe.db.set_value("Property", self.property, "status", "On Lease")
-                frappe.msgprint("Property set to On Lease")
-            if (
-                get_datetime(add_months(self.end_date, -3))
-                <= get_datetime(now())
-                <= get_datetime(add_months(self.end_date, 3))
-            ):
-                frappe.db.set_value(
-                    "Property", self.property, "status", "Off Lease in 3 Months"
+        self.set_unit_occupancy_status()
+        self.compute_meter_consumption()
+
+    def compute_meter_consumption(self):
+        """Units consumed = closing - opening (only once a closing reading exists)."""
+        for row in self.meter_readings or []:
+            if row.closing_reading:
+                row.units_consumed = max(
+                    flt(row.closing_reading) - flt(row.opening_reading), 0
                 )
-                frappe.msgprint("Property set to Off Lease in 3 Months")
+            else:
+                row.units_consumed = 0
+
+    def set_unit_occupancy_status(self):
+        """Reflect this lease's window on the leased Property Unit's status.
+
+        Aligned with the workspace number cards: an occupied unit is "Rented",
+        a unit within 3 months of lease end is "Off Lease in 3 Months", and an
+        expired lease leaves the unit "Available".
+        """
+        if not self.property_unit or not self.start_date or not self.end_date:
+            return
+        try:
+            today_date = getdate(today())
+            start = getdate(self.start_date)
+            end = getdate(self.end_date)
+            warn_from = getdate(add_months(self.end_date, -3))
+
+            if today_date < start or today_date > end:
+                # Upcoming or already-ended leases don't claim the unit here;
+                # the daily scheduler frees expired units to "Available".
+                return
+
+            new_status = "Off Lease in 3 Months" if today_date >= warn_from else "Rented"
+            current = frappe.db.get_value("Property Unit", self.property_unit, "status")
+            if current != new_status:
+                frappe.db.set_value(
+                    "Property Unit", self.property_unit, "status", new_status
+                )
         except Exception as e:
             app_error_log(frappe.session.user, str(e))
+
+
+@frappe.whitelist()
+def get_unit_lease_defaults(property_unit):
+    """Defaults to seed a Lease when a Property Unit is chosen: the rent item,
+    the unit's rent & deposit, and the company's currency."""
+    if not property_unit:
+        return {}
+    unit = (
+        frappe.db.get_value(
+            "Property Unit",
+            property_unit,
+            ["rent", "security_deposit", "company", "rent_item"],
+            as_dict=True,
+        )
+        or {}
+    )
+    # The unit owns its Rent item (created on save). Fall back to creating it
+    # now for legacy units saved before that behaviour existed.
+    rent_item = unit.get("rent_item")
+    if not rent_item:
+        try:
+            unit_doc = frappe.get_doc("Property Unit", property_unit)
+            unit_doc.ensure_rent_item()
+            rent_item = unit_doc.rent_item
+        except Exception:
+            rent_item = None
+    currency = None
+    if unit.get("company"):
+        currency = frappe.db.get_value("Company", unit.company, "default_currency")
+    return {
+        "rent_item": rent_item,
+        "rent": unit.get("rent") or 0,
+        "security_deposit": unit.get("security_deposit") or 0,
+        "currency": currency,
+    }
+
+
+@frappe.whitelist()
+def get_property_meters(property):
+    """Active meters registered on a Property (building), for the lease's
+    meter-reading snapshot. Returns meter number, type and initial reading."""
+    if not property:
+        return []
+    return frappe.get_all(
+        "Property Meter Reading",
+        filters={
+            "parent": property,
+            "parenttype": "Property",
+            "status": "Active",
+        },
+        fields=["meter_number", "meter_type", "initial_meter_reading"],
+        order_by="meter_type",
+    )
 
 
 @frappe.whitelist()
@@ -60,8 +137,11 @@ def getAllLease():
     frappe.msgprint(
         "The task of making lease invoice schedule for all users has been sent for background processing."
     )
-    invoice_start_date = frappe.db.get_single_value(
-        "Property Management Settings", "invoice_start_date"
+    invoice_start_date = (
+        frappe.db.get_single_value(
+            "Property Management Settings", "invoice_start_date"
+        )
+        or "2000-01-01"
     )
     lease_list = frappe.get_all(
         "Lease", filters={"end_date": (">=", invoice_start_date)}, fields=["name"]
@@ -80,7 +160,7 @@ def make_lease_invoice_schedule(leasedoc):
     lease = frappe.get_doc("Lease", str(leasedoc))
     try:
         # Delete unnecessary records after lease end date
-        lease_invoice_schedule_list = frappe.get_list(
+        lease_invoice_schedule_list = frappe.get_all(
             "Lease Invoice Schedule",
             fields=[
                 "name",
@@ -97,10 +177,14 @@ def make_lease_invoice_schedule(leasedoc):
         if len(lease.lease_item) >= 1 and lease.end_date >= getdate(today()):
             # Clean up records that are no longer required, i.e. of unnecessary lease items and unnecessary dates
             # Records before Invoice Start Date
+            # Optional global cut-off. When Property Management Settings has no
+            # invoice_start_date, fall back to the lease start so the schedule
+            # is still generated (otherwise date comparisons below hit None).
             invoice_start_date = frappe.db.get_single_value(
                 "Property Management Settings", "invoice_start_date"
             )
-            lease_invoice_schedule_list = frappe.get_list(
+            invoice_start_date = getdate(invoice_start_date or lease.start_date)
+            lease_invoice_schedule_list = frappe.get_all(
                 "Lease Invoice Schedule",
                 fields=["name", "parent", "invoice_number", "date_to_invoice"],
                 filters={
@@ -113,7 +197,7 @@ def make_lease_invoice_schedule(leasedoc):
                 # frappe.msgprint("Deleting Record before Invoice Start Date " + str(invoice_start_date) + str(lease_invoice_schedule.name))
                 frappe.delete_doc("Lease Invoice Schedule", lease_invoice_schedule.name)
             # Records of lease_items that no longer existing in lease.lease_item
-            lease_invoice_schedule_list = frappe.get_list(
+            lease_invoice_schedule_list = frappe.get_all(
                 "Lease Invoice Schedule",
                 fields=[
                     "name",
@@ -124,15 +208,9 @@ def make_lease_invoice_schedule(leasedoc):
                 ],
                 filters={"parent": lease.name},
             )
-            lease_items_list = frappe.get_list(
-                "Lease Item",
-                fields=["name", "parent", "lease_item"],
-                filters={"parent": lease.name},
-            )
-            # Create list of lease items that are part of lease.lease_item
-            lease_item_name_list = [
-                lease_item["lease_item"] for lease_item in lease_items_list
-            ]
+            # Use the in-memory child rows. Querying the child doctype directly
+            # (get_list "Lease Item") does not reliably return child fields.
+            lease_item_name_list = [d.lease_item for d in lease.lease_item]
             # frappe.msgprint(str(lease_item_list))
             for lease_invoice_schedule in lease_invoice_schedule_list:
                 if lease_invoice_schedule.lease_item not in lease_item_name_list:
@@ -209,7 +287,7 @@ def make_lease_invoice_schedule(leasedoc):
                         makeInvoiceSchedule(
                             invoice_date,
                             item.lease_item,
-                            item.paid_by,
+                            item.paid_by or lease.customer,
                             item.lease_item,
                             lease.name,
                             invoice_qty,
@@ -247,7 +325,7 @@ def make_lease_invoice_schedule(leasedoc):
                         makeInvoiceSchedule(
                             invoice_date,
                             item.lease_item,
-                            item.paid_by,
+                            item.paid_by or lease.customer,
                             item.lease_item,
                             lease.name,
                             invoice_qty,
@@ -312,7 +390,7 @@ def make_lease_invoice_schedule(leasedoc):
                     makeInvoiceSchedule(
                         invoice_date,
                         item.lease_item,
-                        item.paid_by,
+                        item.paid_by or lease.customer,
                         item.lease_item,
                         lease.name,
                         invoice_qty,
@@ -330,5 +408,13 @@ def make_lease_invoice_schedule(leasedoc):
         frappe.msgprint("Completed making of invoice schedule.")
 
     except Exception as e:
-        frappe.msgprint("Exception error! Check app error log.")
+        # Surface the real reason instead of a generic message so failures are
+        # diagnosable, while still recording it to the error log.
         app_error_log(frappe.session.user, str(e))
+        frappe.log_error(
+            title="make_lease_invoice_schedule failed",
+            message=frappe.get_traceback(),
+        )
+        frappe.throw(
+            _("Could not build the invoice schedule: {0}").format(str(e))
+        )

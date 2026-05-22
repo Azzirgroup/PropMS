@@ -2,3 +2,4 @@
 
 [post_model_sync]
 propms.patches.v1_0.fix_real_estate_sidebar
+propms.patches.v1_0.create_lease_defaults

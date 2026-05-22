@@ -230,35 +230,54 @@ def validateSalesInvoiceItemDuplication(self, method):
 
 @frappe.whitelist()
 def statusChangeBeforeLeaseExpire():
+    """Flag Property Units whose latest lease ends within 3 months."""
     try:
-        # Remarked as the users will set the property status manually
-        # lease_doclist=frappe.db.sql("SELECT l.name, l.property, l.end_date FROM  `tabLease` l  INNER JOIN `tabProperty` p ON l.property = p.name WHERE  l.name = (SELECT ml.name FROM   `tabLease` ml WHERE  ml.property = l.property  ORDER BY ml.end_date DESC LIMIT  1) AND p.status != 'On Lease' and Now() BETWEEN l.start_date and l.end_date", as_dict=1)
-        # if lease_doclist:
-        # 	for lease in lease_doclist:
-        # 		frappe.db.set_value("Property",lease.property,"status","On Lease")
-        lease_doclist = frappe.db.sql(
-            "SELECT l.name, l.property, l.end_date FROM  `tabLease` l  INNER JOIN `tabProperty` p ON l.property = p.name WHERE  l.name = (SELECT ml.name FROM   `tabLease` ml WHERE  ml.property = l.property ORDER BY ml.end_date DESC LIMIT  1) AND l.end_date BETWEEN Now() AND Date_add(Now(), INTERVAL 3 month) AND p.status = 'On Lease'",
+        unit_list = frappe.db.sql(
+            """
+            SELECT l.property_unit, l.end_date
+            FROM `tabLease` l
+            INNER JOIN `tabProperty Unit` u ON l.property_unit = u.name
+            WHERE l.property_unit IS NOT NULL AND l.property_unit != ''
+              AND l.name = (
+                  SELECT ml.name FROM `tabLease` ml
+                  WHERE ml.property_unit = l.property_unit
+                  ORDER BY ml.end_date DESC LIMIT 1
+              )
+              AND l.end_date BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 3 MONTH)
+              AND u.status = 'Rented'
+            """,
             as_dict=1,
         )
-        if lease_doclist:
-            for lease in lease_doclist:
-                frappe.db.set_value(
-                    "Property", lease.property, "status", "Off Lease in 3 Months"
-                )
+        for row in unit_list:
+            frappe.db.set_value(
+                "Property Unit", row.property_unit, "status", "Off Lease in 3 Months"
+            )
     except Exception as e:
         app_error_log(frappe.session.user, str(e))
 
 
 @frappe.whitelist()
 def statusChangeAfterLeaseExpire():
+    """Free Property Units whose latest lease has ended."""
     try:
-        lease_doclist = frappe.db.sql(
-            "SELECT l.name, l.property, l.end_date FROM  `tabLease` l  INNER JOIN `tabProperty` p ON l.property = p.name WHERE  l.name = (SELECT ml.name FROM   `tabLease` ml WHERE  ml.property = l.property  ORDER BY ml.end_date DESC LIMIT  1) AND p.status IN ('On Lease', 'Off Lease in 3 Months') and l.end_date < Now()",
+        unit_list = frappe.db.sql(
+            """
+            SELECT l.property_unit, l.end_date
+            FROM `tabLease` l
+            INNER JOIN `tabProperty Unit` u ON l.property_unit = u.name
+            WHERE l.property_unit IS NOT NULL AND l.property_unit != ''
+              AND l.name = (
+                  SELECT ml.name FROM `tabLease` ml
+                  WHERE ml.property_unit = l.property_unit
+                  ORDER BY ml.end_date DESC LIMIT 1
+              )
+              AND u.status IN ('Rented', 'Off Lease in 3 Months')
+              AND l.end_date < NOW()
+            """,
             as_dict=1,
         )
-        if lease_doclist:
-            for lease in lease_doclist:
-                frappe.db.set_value("Property", lease.property, "status", "Available")
+        for row in unit_list:
+            frappe.db.set_value("Property Unit", row.property_unit, "status", "Available")
     except Exception as e:
         app_error_log(frappe.session.user, str(e))
 
@@ -380,31 +399,29 @@ def makeInvoiceSchedule(
 ):
     if not document_type:
         document_type = "Sales Invoice"
-    try:
-        date_to_invoice = add_days(date, -1 * (days_to_invoice_in_advance or 0))
-        frappe.get_doc(
-            dict(
-                idx=idx,
-                doctype="Lease Invoice Schedule",
-                parent=name,
-                parentfield="lease_invoice_schedule",
-                parenttype="Lease",
-                date_to_invoice=date_to_invoice,
-                schedule_start_date=date,
-                lease_item=item,
-                paid_by=paid_by,
-                lease_item_name=item_name,
-                qty=qty,
-                rate=rate,
-                currency=currency,
-                tax=tax,
-                invoice_item_group=invoice_item_group,
-                document_type=document_type,
-            )
-        ).insert()
-        # frappe.msgprint(str(doc.name))
-    except Exception as e:
-        app_error_log(frappe.session.user, str(e))
+    date_to_invoice = add_days(date, -1 * (days_to_invoice_in_advance or 0))
+    # System-generated child row; bypass per-row permission checks. Errors are
+    # intentionally NOT swallowed here so the caller can report the real reason.
+    frappe.get_doc(
+        dict(
+            idx=idx,
+            doctype="Lease Invoice Schedule",
+            parent=name,
+            parentfield="lease_invoice_schedule",
+            parenttype="Lease",
+            date_to_invoice=date_to_invoice,
+            schedule_start_date=date,
+            lease_item=item,
+            paid_by=paid_by,
+            lease_item_name=item_name,
+            qty=qty,
+            rate=rate,
+            currency=currency,
+            tax=tax,
+            invoice_item_group=invoice_item_group,
+            document_type=document_type,
+        )
+    ).insert(ignore_permissions=True)
 
 
 def diff_month(d1, d2):

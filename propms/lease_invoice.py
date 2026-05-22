@@ -112,8 +112,12 @@ def leaseInvoiceAutoCreate(invoices_schedule=None):
     """Prepare data to create sales invoice from lease invoice schedule. This is called from form button as well as daily schedule"""
     try:
         if not invoices_schedule:
-            invoice_start_date = frappe.db.get_single_value(
-                "Property Management Settings", "invoice_start_date"
+            # No global cut-off configured -> include everything up to today.
+            invoice_start_date = (
+                frappe.db.get_single_value(
+                    "Property Management Settings", "invoice_start_date"
+                )
+                or "2000-01-01"
             )
             invoices_schedule = frappe.get_all(
                 "Lease Invoice Schedule",

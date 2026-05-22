@@ -1,0 +1,99 @@
+{
+ "actions": [],
+ "creation": "2026-05-21 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "meter",
+  "meter_type",
+  "column_break_1",
+  "opening_reading",
+  "opening_date",
+  "column_break_2",
+  "closing_reading",
+  "closing_date",
+  "units_consumed",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "columns": 2,
+   "fieldname": "meter",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Meter",
+   "options": "Meter",
+   "reqd": 1
+  },
+  {
+   "columns": 1,
+   "fetch_from": "meter.meter_type",
+   "fieldname": "meter_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Meter Type",
+   "options": "Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 1,
+   "description": "Reading at handover",
+   "fieldname": "opening_reading",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Opening Reading"
+  },
+  {
+   "fieldname": "opening_date",
+   "fieldtype": "Date",
+   "label": "Opening Date"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 1,
+   "description": "Reading at move-out",
+   "fieldname": "closing_reading",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Closing Reading"
+  },
+  {
+   "fieldname": "closing_date",
+   "fieldtype": "Date",
+   "label": "Closing Date"
+  },
+  {
+   "columns": 1,
+   "fieldname": "units_consumed",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Units Consumed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-21 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Property Management Solution",
+ "name": "Lease Meter Reading",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

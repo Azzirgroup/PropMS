@@ -50,17 +50,17 @@ body, main, .main-section { padding-top: 0 !important; margin-top: 0 !important;
   <div class="card">
     <div class="label">Master</div>
     <div class="name"><a href="/app/property">Property</a></div>
-    <div class="desc">A building or estate. Tree-structured (parent/child). Holds meter installations, amenities, insurance and on-site assets.</div>
+    <div class="desc">The building or estate. Tree-structured (parent/child). Holds company, cost center, meters, amenities, insurance and documents — inherited by its units.</div>
   </div>
   <div class="card">
     <div class="label">Master</div>
     <div class="name"><a href="/app/property-unit">Property Unit</a></div>
-    <div class="desc">An individually-leasable unit within a Property — apartment, office, shop. Carries occupancy status (Available / Rented / etc.).</div>
+    <div class="desc"><b>The leasable space</b> within a Property — apartment, office, shop. Carries rent, deposit and occupancy status (Available / Rented / …). This is what a Lease is raised against.</div>
   </div>
   <div class="card">
     <div class="label">Transaction</div>
     <div class="name"><a href="/app/lease">Lease</a></div>
-    <div class="desc">Tenancy agreement linking a Property + Customer + lease items + dates. Generates the invoice schedule and triggers handover checklists.</div>
+    <div class="desc">Tenancy contract for one <b>Property Unit</b> + Customer + lease items + dates. Building, company &amp; cost center auto-fill from the unit. Generates the invoice schedule and handover checklist.</div>
   </div>
   <div class="card">
     <div class="label">Generated</div>
@@ -94,25 +94,22 @@ body, main, .main-section { padding-top: 0 !important; margin-top: 0 !important;
        Customer ──── owns / rents
            │
            ▼
-       Property  ◄──── parent (tree) ────►  Property
-           │                                     │
-           ├── Property Unit ── Unit Type        │
-           ├── Insurance                         │
+       Property  (building / estate, tree)
+           ├── company, cost_center  ── inherited by units
+           ├── Insurance
            ├── Property Document  (expiry tracking)
            ├── Property Vendor    (service providers)
-           ├── Property Meter Reading ── Meter
-           │                                  │
-           │                                  ▼
-           │                            Meter Reading ── auto-creates ──► Sales Invoice
-           │
-           ▼
-        Lease ── Lease Item (child)
-           │
-           ▼
-   Lease Invoice Schedule (child)
-           │   daily scheduler @ 12:00
-           ▼
-       Sales Invoice  ─── Payment Entry  ─── Journal Entry
+           ├── Property Meter Reading ── Meter ──► Meter Reading ──► Sales Invoice
+           └── Property Unit ── Unit Type   (the leasable space)
+                    │
+                    ▼
+                 Lease ── Lease Item (child)
+                    │
+                    ▼
+           Lease Invoice Schedule (child)
+                    │   daily scheduler @ 12:00
+                    ▼
+                Sales Invoice  ─── Payment Entry  ─── Journal Entry
 
    Issue  ──► Issue Materials Detail ──► Material Request ──► Sales Invoice
      (maintenance ticket)                 (parts pulled)        (bill-back)
@@ -128,9 +125,9 @@ body, main, .main-section { padding-top: 0 !important; margin-top: 0 !important;
 <div class="step"><div class="num">3</div><div class="body">Register meters under the Property's <em>Property Meter Reading</em> table (each row points to a <a href="/app/meter">Meter</a> master).</div></div>
 
 <h3>2 · Sign a lease</h3>
-<div class="step"><div class="num">1</div><div class="body">Create a <a href="/app/lease/new">Lease</a>: pick the Property + Customer + start/end dates + lease items (rent, service charge, etc.).</div></div>
-<div class="step"><div class="num">2</div><div class="body">On Submit: the system auto-generates the <em>Lease Invoice Schedule</em> for every cycle and creates a <em>Daily Checklist</em> for Handover from the &ldquo;Handover&rdquo; checkup area template.</div></div>
-<div class="step"><div class="num">3</div><div class="body">Property status flips to <span class="pill">On Lease</span> and, in the last 3 months, to <span class="pill">Off Lease in 3 Months</span> for renewal flagging (visible on the workspace).</div></div>
+<div class="step"><div class="num">1</div><div class="body">Create a <a href="/app/lease/new">Lease</a>: pick the <b>Property Unit</b> + Customer + start/end dates + lease items (rent, service charge, etc.). Building, company &amp; owner auto-fill from the unit.</div></div>
+<div class="step"><div class="num">2</div><div class="body">Save, click <em>Make Invoice Schedule</em>, then Submit. The system builds the <em>Lease Invoice Schedule</em> for every cycle and creates a <em>Daily Checklist</em> for Handover from the &ldquo;Handover&rdquo; checkup area template.</div></div>
+<div class="step"><div class="num">3</div><div class="body">The <b>Property Unit</b> status flips to <span class="pill">Rented</span> and, in the last 3 months, to <span class="pill">Off Lease in 3 Months</span> for renewal flagging (visible on the workspace cards).</div></div>
 
 <h3>3 · Billing</h3>
 <div class="step"><div class="num">1</div><div class="body">Every day at 12:00, <code>propms.lease_invoice.leaseInvoiceAutoCreate</code> walks Lease Invoice Schedule rows whose <em>date_to_invoice</em> is due and creates one Sales Invoice per (lease, customer, item group, date, currency) grouping.</div></div>
@@ -145,7 +142,7 @@ body, main, .main-section { padding-top: 0 !important; margin-top: 0 !important;
 <h3>5 · Move-out</h3>
 <div class="step"><div class="num">1</div><div class="body">Create an <a href="/app/exit/new">Exit</a> record. Generate a Takeover <a href="/app/daily-checklist">Daily Checklist</a>.</div></div>
 <div class="step"><div class="num">2</div><div class="body">Reconcile the Security Deposit on the Lease — mark it Returned / Recovered for rent / Recovered for repairs.</div></div>
-<div class="step"><div class="num">3</div><div class="body">Property status auto-flips back to <span class="pill">Available</span> the day after lease end.</div></div>
+<div class="step"><div class="num">3</div><div class="body">The <b>Property Unit</b> status auto-flips back to <span class="pill">Available</span> the day after lease end (daily scheduler).</div></div>
 
 <h2>Settings &amp; configuration</h2>
 <table>
